@@ -15,6 +15,7 @@ stage('Test') {
 stage('Build Image and Push') {
     environment{
         GIT_COMMIT = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        COMMIT_M= sh(returnStdout: true, script: `git rev-list --format=%B --max-count=1 ${GIT_COMMIT}`)
        }
     steps{
        
