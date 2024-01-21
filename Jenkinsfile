@@ -1,37 +1,28 @@
 pipeline {
-    def commit-id
-    agent any
+  agent any
     stages{
-        //Automatically it will checkout scm
-stage('CommitID'){
+        
+
+stage('Test') {
+               steps{
+
+                   nodejs(nodeJSInstallationName: 'nodejs'){
+                    sh 'npm install'
+                    
+                   }
+}
+} 
+stage('Build Image and Push') {
 
     steps{
-        checkout scm
-        sh "git rev-parse --short HEAD > .git/commit-id"
-        commit-id=readfile('.git/commit-id').trim()
+          
+     script{
+        withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+        docker.build("akib123/nodeapi:v1.0","-f ./Dockerfile ./").push()
+        }
+    }
+           
     }
 }
-
-// stage('Test') {
-//                steps{
-
-//                    nodejs(nodeJSInstallationName: 'nodejs'){
-//                     sh 'npm install'
-                    
-//                    }
-// }
-// } 
-// stage('Build Image and Push') {
-
-//     steps{
-          
-//      script{
-//         withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-//         docker.build("akib123/nodeapi:${commit-id}","-f ./Dockerfile ./").push()
-//         }
-//     }
-           
-//     }
-// }
-// } 
-// }
+} 
+}
