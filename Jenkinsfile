@@ -15,10 +15,12 @@ stage('Test') {
 stage('Build Image and Push') {
 
     steps{
-          
+       environment{
+        GIT_COMMIT = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+       }
      script{
         withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-        docker.build("akib123/nodeapi:v1.0","-f ./Dockerfile ./").push()
+        docker.build("akib123/nodeapi:${GIT_COMMIT}","-f ./Dockerfile ./").push()
         }
     }
            
